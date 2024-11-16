@@ -24,7 +24,7 @@ export class State {
     public roundContributions: number[];
     public playerHasMoved: boolean[];
     public foldedPlayerIndices: number[];
-    public moveHistory: [string, number][] = [];
+    public moveHistory: [string, number][];
 
     constructor({
         activePlayerIndex,
@@ -39,7 +39,8 @@ export class State {
         hole,
         deck,
         nextCardIndex,
-        playerCount = 6
+        playerCount = 6,
+        moveHistory,
     }: {
         activePlayerIndex: number;
         roundNumber: number;
@@ -54,6 +55,7 @@ export class State {
         deck: string[];
         nextCardIndex: number;
         playerCount?: number;
+        moveHistory?: [string, number][];
     }) {
         this.activePlayerIndex = activePlayerIndex;
         this.roundNumber = roundNumber;
@@ -68,6 +70,7 @@ export class State {
         this.deck = deck;
         this.nextCardIndex = nextCardIndex;
         this.playerCount = playerCount;
+        this.moveHistory = moveHistory ?? [];
     }
 
     static gameInitializedState(playerCount: number = 6): State {
@@ -97,5 +100,24 @@ export class State {
             state.hole.push([state.deck[++state.nextCardIndex], state.deck[++state.nextCardIndex]]);
         }
         return state;
+    }
+
+    copy(): State {
+        return new State({
+            activePlayerIndex: this.activePlayerIndex,
+            roundNumber: this.roundNumber,
+            stack: [...this.stack],
+            roundContributions: [...this.roundContributions], 
+            playerHasMoved: [...this.playerHasMoved],
+            foldedPlayerIndices: [...this.foldedPlayerIndices],
+            totalPot: this.totalPot,
+            roundPot: this.roundPot,
+            board: [...this.board],
+            hole: [...this.hole],
+            deck: [...this.deck],
+            nextCardIndex: this.nextCardIndex,
+            playerCount: this.playerCount,
+            moveHistory: [...this.moveHistory]
+        });
     }
 }

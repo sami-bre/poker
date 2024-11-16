@@ -1,21 +1,46 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { State } from "@/lib/game/game_state"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { getPossibleMoves, applyMove } from "@/lib/game/game"
+import { MoveLog } from "@/components/poker/MoveLog"
 
 export default function Home() {
+  const [gameState, setGameState] = useState<State | null>(null)
   const [betAmount, setBetAmount] = useState(40)
   const [raiseAmount, setRaiseAmount] = useState(40)
-  
+
+  useEffect(() => {
+    setGameState(State.gameInitializedState())
+  }, [])
+
   const adjustBet = (amount: number) => {
-    setBetAmount(Math.max(40, betAmount + amount))
+    setBetAmount(Math.max(State.bigBlind, betAmount + amount))
   }
 
   const adjustRaise = (amount: number) => {
-    setRaiseAmount(Math.max(40, raiseAmount + amount))
+    setRaiseAmount(Math.max(State.bigBlind, raiseAmount + amount))
+  }
+
+  const possibleMoves = gameState ? getPossibleMoves(gameState) : []
+
+  const handleMove = (move: string) => {
+    if (!gameState) return
+    try {
+      const newState = applyMove(gameState, move)
+      setGameState(newState.copy()) // react needs a different object reference to trigger a re-render
+      const nextMoves = getPossibleMoves(newState)
+      if(['m', 'n', 'o'].some(move => nextMoves.includes(move))){
+        handleMove(nextMoves[0])
+      }
+    } catch (error) {
+      console.error(error)
+      // Optionally add error handling UI here
+    }
   }
 
   return (
@@ -27,8 +52,8 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2">
               <span>Stacks</span>
-              <Input 
-                type="number" 
+              <Input
+                type="number"
                 defaultValue="10000"
                 className="w-24"
               />
@@ -40,29 +65,88 @@ export default function Home() {
         <CardContent>
           <ScrollArea className="h-[400px] w-full">
             <div className="space-y-1 font-mono text-sm">
-              <p>Player 1 is dealt 5d4c</p>
-              <p>Player 2 is dealt 5d4c</p>
-              <p>Player 3 is dealt Ah4s</p>
-              <p>Player 4 is dealt QcTd</p>
-              <p>Player 5 is dealt Js9s</p>
-              <p>Player 6 is dealt 8h8s</p>
-              {/* Add more log entries as needed */}
+              {gameState && <MoveLog gameState={gameState} />}
             </div>
           </ScrollArea>
           <div className="flex flex-wrap gap-2 mt-4">
             <div className="flex gap-2 w-full md:w-auto">
-              <Button size="sm">Fold</Button>
-              <Button size="sm" variant="secondary">Check</Button>
-              <Button size="sm" variant="secondary">Call</Button>
-              <Button size="sm" variant="secondary" onClick={() => adjustBet(-40)}>-</Button>
-              <Button size="sm">Bet {betAmount}</Button>
-              <Button size="sm" variant="secondary" onClick={() => adjustBet(40)}>+</Button>
+              <Button 
+                size="sm"
+                disabled={!possibleMoves.includes('f')}
+                onClick={() => handleMove('f')}
+              >
+                Fold
+              </Button>
+              <Button 
+                size="sm"
+                disabled={!possibleMoves.includes('x')}
+                onClick={() => handleMove('x')}
+              >
+                Check
+              </Button>
+              <Button 
+                size="sm"
+                disabled={!possibleMoves.includes('c')}
+                onClick={() => handleMove('c')}
+              >
+                Call
+              </Button>
+              <Button 
+                size="sm" 
+                variant="secondary" 
+                onClick={() => adjustBet(-40)}
+                disabled={!possibleMoves.includes('b')}
+              >
+                -
+              </Button>
+              <Button 
+                size="sm"
+                disabled={!possibleMoves.includes('b')}
+                onClick={() => handleMove(`b${betAmount}`)}
+              >
+                Bet {betAmount}
+              </Button>
+              <Button 
+                size="sm" 
+                variant="secondary" 
+                onClick={() => adjustBet(40)}
+                disabled={!possibleMoves.includes('b')}
+              >
+                +
+              </Button>
             </div>
             <div className="flex gap-2 w-full md:w-auto">
-              <Button size="sm" variant="secondary" onClick={() => adjustRaise(-40)}>-</Button>
-              <Button size="sm">Raise {raiseAmount}</Button>
-              <Button size="sm" variant="secondary" onClick={() => adjustRaise(40)}>+</Button>
-              <Button size="sm" variant="destructive">ALLIN</Button>
+              <Button 
+                size="sm" 
+                variant="secondary" 
+                onClick={() => adjustRaise(-40)}
+                disabled={!possibleMoves.includes('r')}
+              >
+                -
+              </Button>
+              <Button 
+                size="sm"
+                disabled={!possibleMoves.includes('r')}
+                onClick={() => handleMove(`r${raiseAmount}`)}
+              >
+                Raise {raiseAmount}
+              </Button>
+              <Button 
+                size="sm" 
+                variant="secondary" 
+                onClick={() => adjustRaise(40)}
+                disabled={!possibleMoves.includes('r')}
+              >
+                +
+              </Button>
+              <Button 
+                size="sm" 
+                variant="destructive"
+                disabled={!possibleMoves.includes('r')}
+                onClick={() => handleMove(`r${gameState?.stack[gameState.activePlayerIndex] ?? 0}`)}
+              >
+                ALLIN
+              </Button>
             </div>
           </div>
         </CardContent>
