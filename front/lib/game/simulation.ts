@@ -1,4 +1,5 @@
-import { applyMove, getPossibleMoves, State } from './game';
+import { applyMove, getPossibleMoves } from './game';
+import { State } from './game_state';
 import * as readline from 'readline-sync';
 
 const state = State.gameInitializedState();
