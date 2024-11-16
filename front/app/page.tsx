@@ -45,13 +45,15 @@ export default function Home() {
   }
 
   const handleReset = () => {
-    setGameState(null)
-    setBetAmount(40)
-    setRaiseAmount(40)
-  }
-
-  const handleApply = () => {
-    setGameState(State.gameInitializedState(6, stackSize))
+    if (gameState === null) {
+      // Initialize new game
+      setGameState(State.gameInitializedState(6, stackSize))
+    } else {
+      // Reset game
+      setGameState(null)
+      setBetAmount(40)
+      setRaiseAmount(40)
+    }
   }
 
   return (
@@ -71,13 +73,9 @@ export default function Home() {
                 disabled={gameState !== null}
               />
             </div>
-            <Button
-              onClick={handleApply}
-              disabled={gameState !== null}
-            >
-              Apply
+            <Button variant={gameState === null ? "outline" : "destructive"} onClick={handleReset}>
+              {gameState === null ? "Start" : "Reset"}
             </Button>
-            <Button variant="destructive" onClick={handleReset}>Reset</Button>
           </div>
         </CardHeader>
         <CardContent>
