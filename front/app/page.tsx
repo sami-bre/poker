@@ -13,6 +13,7 @@ export default function Home() {
   const [gameState, setGameState] = useState<State | null>(null)
   const [betAmount, setBetAmount] = useState(40)
   const [raiseAmount, setRaiseAmount] = useState(40)
+  const [stackSize, setStackSize] = useState(10000)
 
   useEffect(() => {
     setGameState(State.gameInitializedState())
@@ -43,6 +44,16 @@ export default function Home() {
     }
   }
 
+  const handleReset = () => {
+    setGameState(null)
+    setBetAmount(40)
+    setRaiseAmount(40)
+  }
+
+  const handleApply = () => {
+    setGameState(State.gameInitializedState(6, stackSize))
+  }
+
   return (
     <div className="container mx-auto p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
       {/* Playing Field Log Section */}
@@ -54,12 +65,19 @@ export default function Home() {
               <span>Stacks</span>
               <Input
                 type="number"
-                defaultValue="10000"
+                value={stackSize}
+                onChange={(e) => setStackSize(Number(e.target.value))}
                 className="w-24"
+                disabled={gameState !== null}
               />
             </div>
-            <Button variant="outline">Apply</Button>
-            <Button variant="destructive">Reset</Button>
+            <Button 
+              onClick={handleApply}
+              disabled={gameState !== null}
+            >
+              Apply
+            </Button>
+            <Button variant="destructive" onClick={handleReset}>Reset</Button>
           </div>
         </CardHeader>
         <CardContent>
