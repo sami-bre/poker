@@ -35,7 +35,7 @@ export default function Home() {
       const newState = applyMove(gameState, move)
       setGameState(newState.copy()) // react needs a different object reference to trigger a re-render
       const nextMoves = getPossibleMoves(newState)
-      if(['m', 'n', 'o'].some(move => nextMoves.includes(move))){
+      if (['m', 'n', 'o'].some(move => nextMoves.includes(move))) {
         handleMove(nextMoves[0])
       }
     } catch (error) {
@@ -71,7 +71,7 @@ export default function Home() {
                 disabled={gameState !== null}
               />
             </div>
-            <Button 
+            <Button
               onClick={handleApply}
               disabled={gameState !== null}
             >
@@ -88,45 +88,49 @@ export default function Home() {
           </ScrollArea>
           <div className="flex flex-wrap gap-2 mt-4">
             <div className="flex gap-2 w-full md:w-auto">
-              <Button 
+              <Button
                 size="sm"
                 disabled={!possibleMoves.includes('f')}
                 onClick={() => handleMove('f')}
               >
                 Fold
               </Button>
-              <Button 
+              <Button
                 size="sm"
                 disabled={!possibleMoves.includes('x')}
                 onClick={() => handleMove('x')}
               >
                 Check
               </Button>
-              <Button 
+              <Button
                 size="sm"
                 disabled={!possibleMoves.includes('c')}
                 onClick={() => handleMove('c')}
               >
                 Call
               </Button>
-              <Button 
-                size="sm" 
-                variant="secondary" 
+              <Button
+                size="sm"
+                variant="secondary"
                 onClick={() => adjustBet(-40)}
                 disabled={!possibleMoves.includes('b')}
               >
                 -
               </Button>
-              <Button 
+              <Button
                 size="sm"
-                disabled={!possibleMoves.includes('b')}
+                disabled={(() => {
+                  var betPossible = possibleMoves.includes('b');
+                  const requiredChips = betAmount;
+                  return !betPossible || requiredChips > (gameState?.stack[gameState.activePlayerIndex] ?? 0);
+                })()}
                 onClick={() => handleMove(`b${betAmount}`)}
               >
                 Bet {betAmount}
               </Button>
-              <Button 
-                size="sm" 
-                variant="secondary" 
+              <Button
+                size="sm"
+                variant="secondary"
                 onClick={() => adjustBet(40)}
                 disabled={!possibleMoves.includes('b')}
               >
@@ -134,34 +138,46 @@ export default function Home() {
               </Button>
             </div>
             <div className="flex gap-2 w-full md:w-auto">
-              <Button 
-                size="sm" 
-                variant="secondary" 
+              <Button
+                size="sm"
+                variant="outline"
                 onClick={() => adjustRaise(-40)}
                 disabled={!possibleMoves.includes('r')}
               >
                 -
               </Button>
-              <Button 
+              <Button
                 size="sm"
-                disabled={!possibleMoves.includes('r')}
+                disabled={(() => {
+                  var raisePossible = possibleMoves.includes('r')
+                  // Check if raise amount is valid
+                  const highestBet = Math.max(...(gameState?.roundContributions ?? []));
+                  const requiredChips = raiseAmount - (gameState?.roundContributions[gameState.activePlayerIndex] ?? 0);
+                  return !raisePossible || requiredChips > (gameState?.stack[gameState.activePlayerIndex] ?? 0) || raiseAmount < highestBet + 40;
+                })()}
                 onClick={() => handleMove(`r${raiseAmount}`)}
               >
-                Raise {raiseAmount}
+                Raise to {raiseAmount}
               </Button>
-              <Button 
-                size="sm" 
-                variant="secondary" 
+              <Button
+                size="sm"
+                variant="outline"
                 onClick={() => adjustRaise(40)}
                 disabled={!possibleMoves.includes('r')}
               >
                 +
               </Button>
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 variant="destructive"
-                disabled={!possibleMoves.includes('r')}
-                onClick={() => handleMove(`r${gameState?.stack[gameState.activePlayerIndex] ?? 0}`)}
+                disabled={!(possibleMoves.includes('r') || possibleMoves.includes('b'))}
+                onClick={() => {
+                  if(possibleMoves.includes('r')){
+                    handleMove(`r${gameState?.stack[gameState.activePlayerIndex] ?? 0}`)
+                  } else {
+                    handleMove(`b${gameState?.stack[gameState.activePlayerIndex] ?? 0}`)
+                  }
+                }}
               >
                 ALLIN
               </Button>
