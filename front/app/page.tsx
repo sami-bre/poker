@@ -13,10 +13,10 @@ export default function Home() {
   const [gameState, setGameState] = useState<State | null>(null)
   const [betAmount, setBetAmount] = useState(40)
   const [raiseAmount, setRaiseAmount] = useState(40)
-  const [stackSize, setStackSize] = useState(10000)
+  const [stackSize, setStackSize] = useState(2000)
 
   useEffect(() => {
-    setGameState(State.gameInitializedState())
+    setGameState(State.gameInitializedState(6, stackSize))
   }, [])
 
   const adjustBet = (amount: number) => {
@@ -87,6 +87,7 @@ export default function Home() {
           <div className="flex flex-wrap gap-2 mt-4">
             <div className="flex gap-2 w-full md:w-auto">
               <Button
+                data-testid='fold_button'
                 size="sm"
                 disabled={!possibleMoves.includes('f')}
                 onClick={() => handleMove('f')}
@@ -94,6 +95,7 @@ export default function Home() {
                 Fold
               </Button>
               <Button
+                data-testid='check_button'
                 size="sm"
                 disabled={!possibleMoves.includes('x')}
                 onClick={() => handleMove('x')}
@@ -101,6 +103,7 @@ export default function Home() {
                 Check
               </Button>
               <Button
+                data-testid='call_button'
                 size="sm"
                 disabled={!possibleMoves.includes('c')}
                 onClick={() => handleMove('c')}
@@ -116,6 +119,7 @@ export default function Home() {
                 -
               </Button>
               <Button
+                data-testid='bet_button'
                 size="sm"
                 disabled={(() => {
                   var betPossible = possibleMoves.includes('b');
@@ -145,6 +149,7 @@ export default function Home() {
                 -
               </Button>
               <Button
+                data-testid='raise_button'
                 size="sm"
                 disabled={(() => {
                   var raisePossible = possibleMoves.includes('r')
@@ -158,6 +163,7 @@ export default function Home() {
                 Raise to {raiseAmount}
               </Button>
               <Button
+                data-testid='raise_button_plus'
                 size="sm"
                 variant="outline"
                 onClick={() => adjustRaise(40)}
@@ -166,6 +172,7 @@ export default function Home() {
                 +
               </Button>
               <Button
+                data-testid='allin_button'
                 size="sm"
                 variant="destructive"
                 disabled={!(possibleMoves.includes('r') || possibleMoves.includes('b'))}

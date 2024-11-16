@@ -7,7 +7,7 @@ interface MoveLogProps {
 
 export function MoveLog({ gameState }: MoveLogProps) {
   return (
-    <>
+    <div data-testid='move_log'>
       {gameState?.hole.map((cards, playerIndex) => (
         <p key={playerIndex}>
           Player {playerIndex + 1} is dealt {cards[0]}{cards[1]}
@@ -45,7 +45,7 @@ export function MoveLog({ gameState }: MoveLogProps) {
 
         return (
           <>
-            <p key={index} className={dealerMove ? 'font-bold' : ''}>{text}</p>
+            <p className={dealerMove ? 'font-bold' : ''}>{text}</p>
             {dealerMove && <hr className="my-2" />}
           </>
         );
@@ -57,6 +57,6 @@ export function MoveLog({ gameState }: MoveLogProps) {
           {getPossibleMoves(gameState).includes('z') ? 'Game end. See the winner in the hand history.' : `Waiting for Player ${gameState.activePlayerIndex + 1}...`}
         </p>
       )}
-    </>
+    </div>
   )
 } 
