@@ -195,4 +195,25 @@ describe('Poker Game', () => {
         // when a player tries to raise with not enough chips, it should throw an error
         expect(() => applyMove(state, "r3200")).toThrow("Player does not have enough chips to raise");
     })
+
+    test("all-in before flop", () => {
+        var cfr = new Set(["c", "f", "r"])
+        expect(new Set(getPossibleMoves(state))).toEqual(cfr);
+        state = applyMove(state, "r2000");  // player 2 goes all-in
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["c", "f"]));
+        state = applyMove(state, "c");  // player 3 calls
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["c", "f"]));
+        state = applyMove(state, "f");  // player 4 folds
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["c", "f"]));
+        state = applyMove(state, "c");  // player 0 calls
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["c", "f"]));
+        state = applyMove(state, "c");  // player 1 calls
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["m"]));
+        state = applyMove(state, "m");  // deal flop
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["n"]));
+        state = applyMove(state, "n");  // deal turn
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["o"]));
+        state = applyMove(state, "o");  // deal river
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["z"]));
+    })
 }); 

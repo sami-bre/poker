@@ -60,3 +60,16 @@ export function allRoundContributionsZero(state: State): boolean {
     // All active players have zero contributions
     return true;
 }
+
+
+/**
+ * Checks if all non-folded players have zero stacks (are all all-in)
+ */
+export function stackZero(state: State): boolean {
+    for (let i = 0; i < state.stack.length; i++) {
+        if (!state.foldedPlayerIndices.includes(i) && state.stack[i] !== 0) {
+            return false;
+        }
+    }
+    return true;
+}

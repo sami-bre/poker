@@ -1,5 +1,5 @@
 import { State } from "./game_state";
-import { nextNonFoldedPlayerIndex, allRoundContributionsEqual, allPlayersMoved, allRoundContributionsZero } from "./helpers";
+import { nextNonFoldedPlayerIndex, allRoundContributionsEqual, allPlayersMoved, allRoundContributionsZero, stackZero } from "./helpers";
 
 
 // command move representations
@@ -110,26 +110,26 @@ function applyDealingMove(state: State, command: string) {
 export function getPossibleMoves(state: State): any[] {
 
     // check if showdown is available
-    var canShowdown = state.roundNumber == 3 && allRoundContributionsEqual(state) && allPlayersMoved(state);
+    var canShowdown = state.roundNumber == 3 && ((allRoundContributionsEqual(state) && allPlayersMoved(state)) || stackZero(state));
     canShowdown = canShowdown || state.foldedPlayerIndices.length == state.playerCount - 1;  // all but one player has folded
     if(canShowdown){
         return ['z'];
     }
     
     // check if deal flop is available
-    const canDealFlop = state.roundNumber == 0 && allRoundContributionsEqual(state) && allPlayersMoved(state);
+    const canDealFlop = state.roundNumber == 0 && ((allRoundContributionsEqual(state) && allPlayersMoved(state)) || stackZero(state));
     if(canDealFlop){
         return ['m'];
     }
 
     // check if deal turn is available
-    const canDealTurn = state.roundNumber == 1 && allRoundContributionsEqual(state) && allPlayersMoved(state);
+    const canDealTurn = state.roundNumber == 1 && ((allRoundContributionsEqual(state) && allPlayersMoved(state)) || stackZero(state));
     if(canDealTurn){
         return ['n'];
     }
 
     // check if deal river is available
-    const canDealRiver = state.roundNumber == 2 && allRoundContributionsEqual(state) && allPlayersMoved(state);
+    const canDealRiver = state.roundNumber == 2 && ((allRoundContributionsEqual(state) && allPlayersMoved(state)) || stackZero(state));
     if(canDealRiver){
         return ['o'];
     }
