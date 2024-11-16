@@ -21,7 +21,7 @@ export function applyMove(state: State, move: string): State {
     if(!possibleMoves.includes(move.charAt(0))){
         throw new Error("Invalid move: " + move);
     }
-    console.log("------------------------ applying move", move);
+    
     const command = move.charAt(0);
 
     if (["m", "n", "o", "z"].includes(command)) {
@@ -39,7 +39,7 @@ function applyPlayerMove(state: State, move: string) {
     if(command == "b"){
         const amount = parseInt(move.substring(1));
         if (state.stack[state.activePlayerIndex] < amount) {
-            throw new Error("Not enough chips to bet " + amount);
+            throw new Error("Not enough chips to bet");
         }
         state.stack[state.activePlayerIndex] -= amount;
         state.roundContributions[state.activePlayerIndex] += amount;
@@ -47,16 +47,19 @@ function applyPlayerMove(state: State, move: string) {
     } else if (command == "c"){
         const increment = highestBet - state.roundContributions[state.activePlayerIndex];
         if (state.stack[state.activePlayerIndex] < increment) {
-            throw new Error("Player " + state.activePlayerIndex + " does not have enough chips to call " + highestBet);
+            throw new Error("Player does not have enough chips to call");
         }
         state.stack[state.activePlayerIndex] -= increment;
         state.roundContributions[state.activePlayerIndex] += increment;
         state.roundPot += increment;
     } else if (command == "r"){
         const amount = parseInt(move.substring(1));
+        if(amount < highestBet + State.bigBlind){
+            throw new Error("Raise amount should be at least current round contribution + big blind");
+        }
         const increment = amount - state.roundContributions[state.activePlayerIndex];
         if (state.stack[state.activePlayerIndex] < increment) {
-            throw new Error("Player " + state.activePlayerIndex + " does not have enough chips to raise " + amount);
+            throw new Error("Player does not have enough chips to raise");
         }
         state.stack[state.activePlayerIndex] -= increment;
         state.roundContributions[state.activePlayerIndex] += increment;
@@ -68,6 +71,7 @@ function applyPlayerMove(state: State, move: string) {
     }
     state.playerHasMoved[state.activePlayerIndex] = true;
     state.activePlayerIndex = nextNonFoldedPlayerIndex(state, (state.activePlayerIndex + 1) % state.playerCount);
+    state.moveHistory.push(move);
     return state;
 }
 
@@ -99,6 +103,7 @@ function applyDealingMove(state: State, command: string) {
             break;
     }
     state.activePlayerIndex = nextNonFoldedPlayerIndex(state, 0);
+    state.moveHistory.push(command);
     return state;
 }
 

@@ -108,6 +108,14 @@ describe('Poker Game', () => {
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
         state = applyMove(state, "f")   // player 2 folds
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["z"]))
+        // did we record moves correctly?
+        expect(state.moveHistory).toEqual([
+            'c', 'f',   'c', 'c',
+            'x', 'm',   'x', 'x',
+            'x', 'b80', 'f', 'r120',
+            'c', 'f',   'n', 'x',
+            'f'
+        ])
     })
 
     test("playthrough 3", () => {
@@ -157,5 +165,33 @@ describe('Poker Game', () => {
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
         state = applyMove(state, "x")   // player 2 checks
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["z"]))
+        // did we record moves correctly?
+        expect(state.moveHistory).toEqual([
+            'c', 'f',   'c', 'c',
+            'x', 'm',   'x', 'x',
+            'x', 'b80', 'f', 'r120',
+            'c', 'f',   'n', 'b100',
+            'c', 'o',   'x', 'x'
+        ])
+    })
+
+    test("trying to raise to less than highestBet + big blind", () => {
+        var cfr = new Set(["c", "f", "r"])
+        var cfrx = new Set(["c", "f", "r", "x"])
+        expect(new Set(getPossibleMoves(state))).toEqual(cfr);
+        state = applyMove(state, "c");  // Player 2 calls
+        expect(new Set(getPossibleMoves(state))).toEqual(cfr)
+        // when a player tries to rise to less than highestBet + big blind, it should throw an error
+        expect(() => applyMove(state, "r40")).toThrow("Raise amount should be at least current round contribution + big blind");
+    })
+
+    test("trying to raise with not enough chips", () => {
+        var cfr = new Set(["c", "f", "r"])
+        var cfrx = new Set(["c", "f", "r", "x"])
+        expect(new Set(getPossibleMoves(state))).toEqual(cfr);
+        state = applyMove(state, "c");  // Player 2 calls
+        expect(new Set(getPossibleMoves(state))).toEqual(cfr)
+        // when a player tries to raise with not enough chips, it should throw an error
+        expect(() => applyMove(state, "r3200")).toThrow("Player does not have enough chips to raise");
     })
 }); 
