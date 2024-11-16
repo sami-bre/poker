@@ -18,6 +18,7 @@ export class State {
     public hole: string[][];
     public deck: string[];
     public nextCardIndex: number;
+    public dealerIndex: number;
     public activePlayerIndex: number;   // the one who's going to make a move
     public roundNumber: number;
     public stack: number[];
@@ -40,6 +41,7 @@ export class State {
         hole,
         deck,
         nextCardIndex,
+        dealerIndex,
         playerCount = 6,
         moveHistory,
     }: {
@@ -56,6 +58,7 @@ export class State {
         hole: string[][];
         deck: string[];
         nextCardIndex: number;
+        dealerIndex: number;
         playerCount?: number;
         moveHistory?: [string, number][];
     }) {
@@ -72,14 +75,16 @@ export class State {
         this.hole = hole;
         this.deck = deck;
         this.nextCardIndex = nextCardIndex;
+        this.dealerIndex = dealerIndex;
         this.playerCount = playerCount;
         this.moveHistory = moveHistory ?? [];
     }
 
-    static gameInitializedState(playerCount: number = 6, stackSize: number = 2000): State {
+    static gameInitializedState(playerCount: number = 6, stackSize: number = 2000, dealerIndex: number = -1): State {
          var state = new State({
-            stackSize,
-            activePlayerIndex: 0,
+            stackSize: stackSize,
+            dealerIndex: dealerIndex,
+            activePlayerIndex: (dealerIndex + 1) % playerCount,
             roundNumber: 0,
             stack: Array(playerCount).fill(stackSize),
             roundContributions: Array(playerCount).fill(0),
@@ -95,11 +100,11 @@ export class State {
         });
         
         state.roundPot = 60;
-        state.stack[0] -= State.smallBlind;
-        state.roundContributions[0] += State.smallBlind;
-        state.stack[1] -= State.bigBlind;
-        state.activePlayerIndex = 2;
-        state.roundContributions[1] += State.bigBlind;
+        state.stack[state.activePlayerIndex] -= State.smallBlind;
+        state.roundContributions[(state.dealerIndex+1)%playerCount] += State.smallBlind;
+        state.stack[(state.activePlayerIndex+1)%playerCount] -= State.bigBlind;
+        state.roundContributions[(state.activePlayerIndex+1)%playerCount] += State.bigBlind;
+        state.activePlayerIndex = (state.activePlayerIndex + 2) % playerCount;
         for(let i = 0; i < playerCount; i++){
             state.hole.push([state.deck[++state.nextCardIndex], state.deck[++state.nextCardIndex]]);
         }
@@ -109,6 +114,7 @@ export class State {
     copy(): State {
         return new State({
             stackSize: this.stackSize,
+            dealerIndex: this.dealerIndex,
             activePlayerIndex: this.activePlayerIndex,
             roundNumber: this.roundNumber,
             stack: [...this.stack],

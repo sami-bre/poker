@@ -103,7 +103,7 @@ function applyDealingMove(state: State, command: string) {
             break;
     }
     state.moveHistory.push([command, -1]); // make sure to do this before updating the activePlayerIndex
-    state.activePlayerIndex = nextNonFoldedPlayerIndex(state, 0);
+    state.activePlayerIndex = nextNonFoldedPlayerIndex(state, (state.dealerIndex + 1) % state.playerCount);
     return state;
 }
 
