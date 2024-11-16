@@ -7,7 +7,7 @@ describe('Poker Game', () => {
     let player_count = 5;
 
     beforeEach(() => {
-        state = State.gameInitializedState(player_count); // Fresh state before each test
+        state = State.gameInitializedState(player_count, 2000); // Fresh state before each test
     });
 
     test('initial state should be properly set up', () => {
@@ -116,6 +116,7 @@ describe('Poker Game', () => {
             ['c', 2], ['f', 4], ['n', -1], ['x', 1],
             ['f', 2]
         ])
+        console.log(state)
     })
 
     test("playthrough 3", () => {

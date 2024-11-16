@@ -10,7 +10,7 @@ export var starter_deck: string[] = [
 export class State {
     public static readonly smallBlind = 20;
     public static readonly bigBlind = 40;
-    public static readonly stackSize = 2000;
+    public stackSize = 2000;
     public playerCount: number;
     public totalPot: number;
     public roundPot: number;
@@ -27,6 +27,7 @@ export class State {
     public moveHistory: [string, number][];
 
     constructor({
+        stackSize,
         activePlayerIndex,
         roundNumber,
         stack,
@@ -42,6 +43,7 @@ export class State {
         playerCount = 6,
         moveHistory,
     }: {
+        stackSize: number;
         activePlayerIndex: number;
         roundNumber: number;
         stack: number[];
@@ -57,6 +59,7 @@ export class State {
         playerCount?: number;
         moveHistory?: [string, number][];
     }) {
+        this.stackSize = stackSize;
         this.activePlayerIndex = activePlayerIndex;
         this.roundNumber = roundNumber;
         this.stack = stack;
@@ -73,11 +76,12 @@ export class State {
         this.moveHistory = moveHistory ?? [];
     }
 
-    static gameInitializedState(playerCount: number = 6): State {
+    static gameInitializedState(playerCount: number = 6, stackSize: number = 2000): State {
          var state = new State({
+            stackSize,
             activePlayerIndex: 0,
             roundNumber: 0,
-            stack: Array(playerCount).fill(State.stackSize),
+            stack: Array(playerCount).fill(stackSize),
             roundContributions: Array(playerCount).fill(0),
             playerHasMoved: Array(playerCount).fill(false),
             foldedPlayerIndices: [],
@@ -104,6 +108,7 @@ export class State {
 
     copy(): State {
         return new State({
+            stackSize: this.stackSize,
             activePlayerIndex: this.activePlayerIndex,
             roundNumber: this.roundNumber,
             stack: [...this.stack],
