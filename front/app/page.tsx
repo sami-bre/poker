@@ -7,16 +7,17 @@ import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { getPossibleMoves, applyMove } from "@/lib/game/game"
-import { MoveLog } from "@/components/poker/MoveLog"
+import { MoveLog } from "@/components/poker/move_log"
 
 export default function Home() {
   const [gameState, setGameState] = useState<State | null>(null)
   const [betAmount, setBetAmount] = useState(40)
   const [raiseAmount, setRaiseAmount] = useState(40)
   const [stackSize, setStackSize] = useState(2000)
+  const [dealerPosition, setDealerPosition] = useState(5) // last index
 
   useEffect(() => {
-    setGameState(State.gameInitializedState(6, stackSize))
+    setGameState(State.gameInitializedState(6, stackSize, dealerPosition))
   }, [])
 
   const adjustBet = (amount: number) => {
@@ -33,23 +34,25 @@ export default function Home() {
     if (!gameState) return
     try {
       const newState = applyMove(gameState, move)
-      setGameState(newState.copy()) // react needs a different object reference to trigger a re-render
+      setGameState(newState.copy())
       const nextMoves = getPossibleMoves(newState)
+      
+      if (nextMoves.includes('z')) {
+        setDealerPosition((prev) => (prev + 1) % gameState.playerCount)
+      }
+      
       if (['m', 'n', 'o'].some(move => nextMoves.includes(move))) {
         handleMove(nextMoves[0])
       }
     } catch (error) {
       console.error(error)
-      // Optionally add error handling UI here
     }
   }
 
   const handleReset = () => {
     if (gameState === null) {
-      // Initialize new game
-      setGameState(State.gameInitializedState(6, stackSize))
+      setGameState(State.gameInitializedState(6, stackSize, dealerPosition))
     } else {
-      // Reset game
       setGameState(null)
       setBetAmount(40)
       setRaiseAmount(40)

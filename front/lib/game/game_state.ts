@@ -83,7 +83,7 @@ export class State {
     static gameInitializedState(playerCount: number = 6, stackSize: number = 2000, dealerIndex: number = -1): State {
          var state = new State({
             stackSize: stackSize,
-            dealerIndex: dealerIndex,
+            dealerIndex: dealerIndex == -1 ? playerCount - 1 : dealerIndex,
             activePlayerIndex: (dealerIndex + 1) % playerCount,
             roundNumber: 0,
             stack: Array(playerCount).fill(stackSize),

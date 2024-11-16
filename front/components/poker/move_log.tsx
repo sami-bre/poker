@@ -13,8 +13,9 @@ export function MoveLog({ gameState }: MoveLogProps) {
           Player {playerIndex + 1} is dealt {cards[0]}{cards[1]}
         </p>
       ))}
-      {gameState && (<p>Player 1 posts small blind - {State.smallBlind} chips</p>)}
-      {gameState && (<p>Player 2 posts big blind - {State.bigBlind} chips</p>)}
+      {gameState && (<p className="font-bold">Player {(gameState.dealerIndex % gameState.playerCount) + 1} is dealer</p>)}
+      {gameState && (<p>Player {((gameState.dealerIndex + 1) % gameState.playerCount) + 1} posts small blind - {State.smallBlind} chips</p>)}
+      {gameState && (<p>Player {((gameState.dealerIndex + 2) % gameState.playerCount) + 1} posts big blind - {State.bigBlind} chips</p>)}
 
       {gameState?.moveHistory.map(([move, playerIndex], index) => {
         const command = move.charAt(0);
