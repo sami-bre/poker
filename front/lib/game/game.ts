@@ -70,8 +70,8 @@ function applyPlayerMove(state: State, move: string) {
         // nothing to do here
     }
     state.playerHasMoved[state.activePlayerIndex] = true;
+    state.moveHistory.push([move, state.activePlayerIndex]);    // make sure to do this before updating the activePlayerIndex
     state.activePlayerIndex = nextNonFoldedPlayerIndex(state, (state.activePlayerIndex + 1) % state.playerCount);
-    state.moveHistory.push(move);
     return state;
 }
 
@@ -102,8 +102,8 @@ function applyDealingMove(state: State, command: string) {
             console.log("showdown", state);
             break;
     }
+    state.moveHistory.push([command, -1]); // make sure to do this before updating the activePlayerIndex
     state.activePlayerIndex = nextNonFoldedPlayerIndex(state, 0);
-    state.moveHistory.push(command);
     return state;
 }
 

@@ -110,11 +110,11 @@ describe('Poker Game', () => {
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["z"]))
         // did we record moves correctly?
         expect(state.moveHistory).toEqual([
-            'c', 'f',   'c', 'c',
-            'x', 'm',   'x', 'x',
-            'x', 'b80', 'f', 'r120',
-            'c', 'f',   'n', 'x',
-            'f'
+            ['c', 2], ['f', 3], ['c', 4], ['c', 0],
+            ['x', 1], ['m', -1], ['x', 0], ['x', 1],
+            ['x', 2], ['b80', 4], ['f', 0], ['r120', 1],
+            ['c', 2], ['f', 4], ['n', -1], ['x', 1],
+            ['f', 2]
         ])
     })
 
@@ -167,11 +167,11 @@ describe('Poker Game', () => {
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["z"]))
         // did we record moves correctly?
         expect(state.moveHistory).toEqual([
-            'c', 'f',   'c', 'c',
-            'x', 'm',   'x', 'x',
-            'x', 'b80', 'f', 'r120',
-            'c', 'f',   'n', 'b100',
-            'c', 'o',   'x', 'x'
+            ['c', 2], ['f', 3], ['c', 4], ['c', 0],
+            ['x', 1], ['m', -1], ['x', 0], ['x', 1],
+            ['x', 2], ['b80', 4], ['f', 0], ['r120', 1],
+            ['c', 2], ['f', 4], ['n', -1], ['b100', 1],
+            ['c', 2], ['o', -1], ['x', 1], ['x', 2]
         ])
     })
 

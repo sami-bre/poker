@@ -24,7 +24,7 @@ export class State {
     public roundContributions: number[];
     public playerHasMoved: boolean[];
     public foldedPlayerIndices: number[];
-    public moveHistory: string[] = [];
+    public moveHistory: [string, number][] = [];
 
     constructor({
         activePlayerIndex,
