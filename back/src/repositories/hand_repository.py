@@ -1,19 +1,22 @@
 import sqlite3
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Optional
+
 from ..domain.models import Hand
+
 
 class HandRepository:
     def __init__(self, db_path="poker.db"):
         self.db_path = db_path
-        
+
     def get_connection(self):
         return sqlite3.connect(self.db_path)
-        
+
     def init_tables(self):
         with self.get_connection() as conn:
             cur = conn.cursor()
-            cur.execute("""
+            cur.execute(
+                """
                 CREATE TABLE IF NOT EXISTS hands (
                     id TEXT PRIMARY KEY,
                     timestamp TIMESTAMP,
@@ -25,45 +28,52 @@ class HandRepository:
                     actions TEXT,
                     winnings TEXT
                 )
-            """)
+            """
+            )
             conn.commit()
-        
+
     def save_hand(self, hand: Hand) -> Hand:
         with self.get_connection() as conn:
             cur = conn.cursor()
-            cur.execute("""
+            cur.execute(
+                """
                 INSERT INTO hands (
-                    id, timestamp, player_count, dealer_position, 
+                    id, timestamp, player_count, dealer_position,
                     initial_stack_size, hands, board, actions, winnings
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                hand.id, 
-                hand.timestamp.isoformat(),
-                hand.player_count,
-                hand.dealer_position,
-                hand.initial_stack_size,
-                hand.hands,
-                hand.board,
-                hand.actions,
-                hand.winnings
-            ))
+            """,
+                (
+                    hand.id,
+                    hand.timestamp.isoformat(),
+                    hand.player_count,
+                    hand.dealer_position,
+                    hand.initial_stack_size,
+                    hand.hands,
+                    hand.board,
+                    hand.actions,
+                    hand.winnings,
+                ),
+            )
             conn.commit()
         return hand
-        
+
     def get_hand(self, hand_id: str) -> Optional[Hand]:
         with self.get_connection() as conn:
             cur = conn.cursor()
-            cur.execute("""
-                SELECT id, timestamp, player_count, dealer_position, 
+            cur.execute(
+                """
+                SELECT id, timestamp, player_count, dealer_position,
                        initial_stack_size, hands, board, actions, winnings
                 FROM hands WHERE id = ?
-            """, (hand_id,))
+            """,
+                (hand_id,),
+            )
             hand_row = cur.fetchone()
-            
+
             if not hand_row:
                 return None
-                
+
             return Hand(
                 id=hand_row[0],
                 timestamp=datetime.fromisoformat(hand_row[1]),
@@ -73,17 +83,19 @@ class HandRepository:
                 hands=hand_row[5],
                 board=hand_row[6],
                 actions=hand_row[7],
-                winnings=hand_row[8]
+                winnings=hand_row[8],
             )
-        
+
     def get_hands(self) -> List[Hand]:
         with self.get_connection() as conn:
             cur = conn.cursor()
-            cur.execute("""
-                SELECT id, timestamp, player_count, dealer_position, 
+            cur.execute(
+                """
+                SELECT id, timestamp, player_count, dealer_position,
                        initial_stack_size, hands, board, actions, winnings
                 FROM hands
-            """)
+            """
+            )
             return [
                 Hand(
                     id=row[0],
@@ -94,7 +106,7 @@ class HandRepository:
                     hands=row[5],
                     board=row[6],
                     actions=row[7],
-                    winnings=row[8]
+                    winnings=row[8],
                 )
                 for row in cur.fetchall()
             ]

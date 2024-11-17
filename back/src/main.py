@@ -1,8 +1,11 @@
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from .api.routes import router
 from .repositories.hand_repository import HandRepository
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -11,6 +14,7 @@ async def lifespan(app: FastAPI):
     repo.init_tables()
     yield
     # Shutdown (if needed)
+
 
 app = FastAPI(lifespan=lifespan)
 
@@ -27,4 +31,5 @@ app.include_router(router)
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000) 
+
+    uvicorn.run(app, host="0.0.0.0", port=8000)
