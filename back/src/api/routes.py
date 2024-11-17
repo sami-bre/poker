@@ -18,9 +18,14 @@ async def create_hand(
     repo: HandRepository = Depends(get_repository),
     poker_service: PokerService = Depends(lambda: PokerService())
 ):
-    # No need to set defaults - dataclass handles this
-    # No need for explicit validation - Pydantic handles this
-    hand.winnings = poker_service.calculate_winnings(hand)
+    try:
+        hand.winnings = poker_service.calculate_winnings(hand)
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Error calculating winnings: {str(e)}"
+        )
+    
     return repo.save_hand(hand)
 
 @router.get("/hands", response_model=list[Hand])
