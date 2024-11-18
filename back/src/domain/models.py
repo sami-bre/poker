@@ -11,7 +11,7 @@ class Hand:
     player_count: int
     dealer_position: int
     initial_stack_size: int
-    hands: str
+    hole: str
     board: str
     actions: str
     id: Optional[str] = field(default_factory=lambda: str(uuid.uuid4()))

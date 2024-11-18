@@ -9,16 +9,34 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { getPossibleMoves, applyMove } from "@/lib/game/game"
 import { MoveLog } from "@/components/poker/move_log"
 
+
+import { Hand } from "@/src/models/Hand"
+import { getHands, saveHand } from "@/src/services/api"
+
 export default function Home() {
   const [gameState, setGameState] = useState<State | null>(null)
   const [betAmount, setBetAmount] = useState(40)
   const [raiseAmount, setRaiseAmount] = useState(40)
   const [stackSize, setStackSize] = useState(2000)
   const [dealerPosition, setDealerPosition] = useState(5) // last index
+  const [hands, setHands] = useState<Hand[]>([])
 
   useEffect(() => {
     setGameState(State.gameInitializedState(6, stackSize, dealerPosition))
   }, [])
+
+  useEffect(() => {
+    loadHandHistory()
+  }, [])
+
+  const loadHandHistory = async () => {
+    try {
+      const handHistory = await getHands()
+      setHands(handHistory)
+    } catch (error) {
+      console.error('Failed to load hand history:', error)
+    }
+  }
 
   const adjustBet = (amount: number) => {
     setBetAmount(Math.max(State.bigBlind, betAmount + amount))
@@ -39,6 +57,8 @@ export default function Home() {
       
       if (nextMoves.includes('z')) {
         setDealerPosition((prev) => (prev + 1) % gameState.playerCount)
+        console.log()
+        handleGameEnd()
       }
       
       if (['m', 'n', 'o'].some(move => nextMoves.includes(move))) {
@@ -56,6 +76,20 @@ export default function Home() {
       setGameState(null)
       setBetAmount(40)
       setRaiseAmount(40)
+    }
+  }
+
+  const handleGameEnd = async () => {
+    try {
+      const newHand = Hand.fromGameState(gameState!)
+      
+      const savedHand = await saveHand(newHand)
+      
+      setHands(prevHands => [...prevHands, savedHand])
+      
+      handleReset()
+    } catch (error) {
+      console.error('Failed to save hand:', error)
     }
   }
 
@@ -202,13 +236,13 @@ export default function Home() {
         <CardContent>
           <ScrollArea className="h-[400px] w-full">
             <div className="space-y-4">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="p-4 rounded-lg bg-muted">
-                  <p className="font-mono text-xs">Hand #{`39b5999a-cdc1-4469-947e-649d30ae6158`}</p>
-                  <p>Stack 10000; Dealer: Player 3; Plater 4 Small blind; Player 6</p>
-                  <p>Hands: Player 1: Tc2c; Player 2: 5d4c; Player 3: Ah4s; Player 4: QcTd</p>
-                  <p>Actions: f:f:f:r300:c:f 3hKdQs x:b100:c Ac x:x Th b80:r160:c</p>
-                  <p>Winnings: Player 1: -40; Player 2: 0; Player 3: -560; Player 4: +600</p>
+              {hands.map(hand => (
+                <div key={hand.id} className="hand-entry">
+                  <div>Time: {new Date(hand.timestamp!).toLocaleString()}</div>
+                  <div>Players: {hand.player_count}</div>
+                  <div>Dealer: Player {hand.dealer_position}</div>
+                  <div>Stack Size: {hand.initial_stack_size}</div>
+                  <div>Winnings: {hand.winnings}</div>
                 </div>
               ))}
             </div>
