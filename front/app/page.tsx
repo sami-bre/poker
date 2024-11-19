@@ -192,6 +192,7 @@ export default function Home() {
                   var raisePossible = possibleMoves.includes('r')
                   // Check if raise amount is valid
                   const highestBet = Math.max(...(gameState?.roundContributions ?? []));
+                  raisePossible = raisePossible && raiseAmount >= highestBet + (gameState?.lastNetIncrement ?? 0);
                   const requiredChips = raiseAmount - (gameState?.roundContributions[gameState.activePlayerIndex] ?? 0);
                   return !raisePossible || requiredChips > (gameState?.stack[gameState.activePlayerIndex] ?? 0) || raiseAmount < highestBet + 40;
                 })()}
