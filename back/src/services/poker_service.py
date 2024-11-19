@@ -78,7 +78,7 @@ class PokerService:
         winnings = []
         for i, final_stack in enumerate(state.stacks):
             amount = final_stack - hand.initial_stack_size
-            winnings.append(f"{i}:{amount}")
+            winnings.append(f"{i+1}:{amount}")  # 1 indexed player id
 
         # Calculate shift amount - when dealer is at last position (len-1), this gives 0
         shift_amount = (len(winnings) - 1 - hand.dealer_position) % len(winnings)
