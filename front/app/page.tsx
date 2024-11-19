@@ -93,6 +93,28 @@ export default function Home() {
     }
   }
 
+  const transformActions = (hand: Hand) => {
+    var board = eval(hand.board) as string[]
+    var actionsList = eval(hand.actions) as [string, number][]
+    var onlyActions = actionsList.map(([action]) => action)
+    var result = onlyActions.map((action: string) => {
+      if (action === 'm') {
+        return board.slice(0, 3).join('')
+      } else if (action === 'n') {
+        return board[3]
+      } else if (action === 'o') {
+        return board[4]
+      }
+      console.log(action)
+      return action
+    })
+    return result.join(':')
+  }
+
+  const transformWinnings = (winnings: string) => {
+    return winnings.replace(/;/g, ' ')
+  }
+
   return (
     <div className="container mx-auto p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
       {/* Playing Field Log Section */}
@@ -238,12 +260,11 @@ export default function Home() {
           <ScrollArea className="h-[400px] w-full">
             <div className="space-y-4">
               {hands.map(hand => (
-                <div key={hand.id} className="hand-entry">
-                  <div>Time: {new Date(hand.timestamp!).toLocaleString()}</div>
-                  <div>Players: {hand.player_count}</div>
-                  <div>Dealer: Player {hand.dealer_position}</div>
-                  <div>Stack Size: {hand.initial_stack_size}</div>
-                  <div>Winnings: {hand.winnings}</div>
+                <div key={hand.id} className="hand-entry p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                  <div>ID: {hand.id ?? ""}</div>
+                  <div>Stack: {hand.initial_stack_size} Dealer: Player {(hand.dealer_position+1) % hand.player_count} Small Blind: Player {(hand.dealer_position+2) % hand.player_count} Big Blind: Player {(hand.dealer_position+3) % hand.player_count}</div>
+                  <div>Actions: {transformActions(hand)}</div>
+                  <div>Winnings: {transformWinnings(hand.winnings)}</div>
                 </div>
               ))}
             </div>
