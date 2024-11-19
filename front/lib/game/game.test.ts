@@ -26,6 +26,7 @@ describe('Poker Game', () => {
     test('playthrough 1', () => {
         var cfr = new Set(["c", "f", "r"])
         var cfrx = new Set(["c", "f", "r", "x"])
+        var crx = new Set(["c", "r", "x"])
         expect(new Set(getPossibleMoves(state))).toEqual(cfr);
         state = applyMove(state, "c");  // Player 2 calls
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
@@ -34,18 +35,18 @@ describe('Poker Game', () => {
         state = applyMove(state, "c");  // Player 4 calls
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "c");  // Player 0 calls
-        expect(new Set(getPossibleMoves(state))).toEqual(cfrx)
+        expect(new Set(getPossibleMoves(state))).toEqual(crx)
         state = applyMove(state, "x");  // Player 1 checks
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["m"]))
         state = applyMove(state, "m");  // Deal flop
         expect(state.board).toHaveLength(3)
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x");  // Player 0 checks
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x");  // Player 1 checks
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x");  // Player 2 checks
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "b80");  // Player 4 bets
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "f");  // player 0 folds
@@ -58,9 +59,9 @@ describe('Poker Game', () => {
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["n"]))
         state = applyMove(state, "n")
         expect(state.board).toHaveLength(4)
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x")   // player 1 checks
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "b40")   // player 2 bets
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(cfr))
         state = applyMove(state, "f")   // player 2 checks
@@ -71,6 +72,7 @@ describe('Poker Game', () => {
     test("playthrough 2", () => {
         var cfr = new Set(["c", "f", "r"])
         var cfrx = new Set(["c", "f", "r", "x"])
+        var crx = new Set(["c", "r", "x"])
         expect(new Set(getPossibleMoves(state))).toEqual(cfr);
         state = applyMove(state, "c");  // Player 2 calls
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
@@ -79,18 +81,18 @@ describe('Poker Game', () => {
         state = applyMove(state, "c");  // Player 4 calls
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "c");  // Player 0 calls
-        expect(new Set(getPossibleMoves(state))).toEqual(cfrx)
+        expect(new Set(getPossibleMoves(state))).toEqual(crx)
         state = applyMove(state, "x");  // Player 1 checks
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["m"]))
         state = applyMove(state, "m");  // Deal flop
         expect(state.board).toHaveLength(3)
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x");  // Player 0 checks
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x");  // Player 1 checks
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x");  // Player 2 checks
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "b80");  // Player 4 bets
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "f");  // player 0 folds
@@ -103,9 +105,9 @@ describe('Poker Game', () => {
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["n"]))
         state = applyMove(state, "n")
         expect(state.board).toHaveLength(4)
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
-        state = applyMove(state, "x")   // player 1 checks
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
+        state = applyMove(state, "b40")   // player 1 bets
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(cfr))
         state = applyMove(state, "f")   // player 2 folds
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["z"]))
         // did we record moves correctly?
@@ -113,7 +115,7 @@ describe('Poker Game', () => {
             ['c', 2], ['f', 3], ['c', 4], ['c', 0],
             ['x', 1], ['m', -1], ['x', 0], ['x', 1],
             ['x', 2], ['b80', 4], ['f', 0], ['r160', 1],
-            ['c', 2], ['f', 4], ['n', -1], ['x', 1],
+            ['c', 2], ['f', 4], ['n', -1], ['b40', 1],
             ['f', 2]
         ])
     })
@@ -121,6 +123,7 @@ describe('Poker Game', () => {
     test("playthrough 3", () => {
         var cfr = new Set(["c", "f", "r"])
         var cfrx = new Set(["c", "f", "r", "x"])
+        var crx = new Set(["c", "r", "x"])
         expect(new Set(getPossibleMoves(state))).toEqual(cfr);
         state = applyMove(state, "c");  // Player 2 calls
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
@@ -129,18 +132,18 @@ describe('Poker Game', () => {
         state = applyMove(state, "c");  // Player 4 calls
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "c");  // Player 0 calls
-        expect(new Set(getPossibleMoves(state))).toEqual(cfrx)
+        expect(new Set(getPossibleMoves(state))).toEqual(crx)
         state = applyMove(state, "x");  // Player 1 checks
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["m"]))
         state = applyMove(state, "m");  // Deal flop
         expect(state.board).toHaveLength(3)
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x");  // Player 0 checks
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x");  // Player 1 checks
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x");  // Player 2 checks
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "b80");  // Player 4 bets
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "f");  // player 0 folds
@@ -153,16 +156,16 @@ describe('Poker Game', () => {
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["n"]))
         state = applyMove(state, "n")
         expect(state.board).toHaveLength(4)
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "b100")   // player 1 bets
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(cfr))
         state = applyMove(state, "c")   // player 2 calls
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["o"]))
         state = applyMove(state, "o")
         expect(state.board).toHaveLength(5)
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x")   // player 1 checks
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x")   // player 2 checks
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["z"]))
         // did we record moves correctly?
@@ -220,6 +223,7 @@ describe('Poker Game', () => {
         state = State.gameInitializedState(player_count, 2000, 2);
         var cfr = new Set(["c", "f", "r"])
         var cfrx = new Set(["c", "f", "r", "x"])
+        var crx = new Set(["c", "r", "x"])
         expect(state.activePlayerIndex).toBe(0);
         expect(new Set(getPossibleMoves(state))).toEqual(cfr);
         state = applyMove(state, "c");  // Player 0 calls
@@ -229,18 +233,18 @@ describe('Poker Game', () => {
         state = applyMove(state, "c");  // Player 2 calls
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "c");  // Player 3 calls
-        expect(new Set(getPossibleMoves(state))).toEqual(cfrx)
+        expect(new Set(getPossibleMoves(state))).toEqual(crx)
         state = applyMove(state, "x");  // Player 4 checks
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["m"]))
         state = applyMove(state, "m");  // Deal flop
         expect(state.board).toHaveLength(3)
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x");  // Player 0 checks
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x");  // Player 1 checks
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x");  // Player 2 checks
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "b80");  // Player 4 bets
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "f");  // player 0 folds
@@ -253,16 +257,16 @@ describe('Poker Game', () => {
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["n"]))
         state = applyMove(state, "n")
         expect(state.board).toHaveLength(4)
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "b100")   // player 1 bets
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(cfr))
         state = applyMove(state, "c")   // player 2 calls
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["o"]))
         state = applyMove(state, "o")
         expect(state.board).toHaveLength(5)
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x")   // player 1 checks
-        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x", "f"]))
+        expect(new Set(getPossibleMoves(state))).toEqual(new Set(["b", "x"]))
         state = applyMove(state, "x")   // player 2 checks
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["z"]))
         // did we record moves correctly?

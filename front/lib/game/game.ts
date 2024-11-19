@@ -168,7 +168,7 @@ export function getPossibleMoves(state: State): any[] {
         moves.push('r')
     }
     // check if fold is available
-    const canFold = true;   // can fold any time
+    const canFold = highestBet > state.roundContributions[state.activePlayerIndex];
     if(canFold){
         moves.push('f')
     }
