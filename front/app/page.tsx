@@ -57,7 +57,6 @@ export default function Home() {
       
       if (nextMoves.includes('z')) {
         setDealerPosition((prev) => (prev + 1) % gameState.playerCount)
-        console.log()
         handleGameEnd()
       }
       
@@ -105,7 +104,6 @@ export default function Home() {
       } else if (action === 'o') {
         return board[4]
       }
-      console.log(action)
       return action
     })
     return result.join(':')

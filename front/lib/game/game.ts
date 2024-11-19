@@ -104,7 +104,7 @@ function applyDealingMove(state: State, command: string) {
             state.playerHasMoved = state.playerHasMoved.map(() => false);
             break;
         case "z":
-            console.log("showdown", state);
+            // nothing to do here
             break;
     }
     state.moveHistory.push([command, -1]); // make sure to do this before updating the activePlayerIndex
