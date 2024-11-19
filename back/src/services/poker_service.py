@@ -77,13 +77,11 @@ class PokerService:
         # string: "player_id:amount;player_id:amount;..."
         winnings = []
         for i, final_stack in enumerate(state.stacks):
+            # Calculate shifted player id based on dealer position
+            shifted_id = ((i + hand.dealer_position + 1) % len(state.stacks)) + 1
             amount = final_stack - hand.initial_stack_size
-            winnings.append(f"{i+1}:{amount}")  # 1 indexed player id
-
-        # Calculate shift amount - when dealer is at last position (len-1), this gives 0
-        shift_amount = (len(winnings) - 1 - hand.dealer_position) % len(winnings)
-        # Rotate list left by shift amount
-        winnings = winnings[shift_amount:] + winnings[:shift_amount]
+            winnings.append(f"{shifted_id}:{amount}")
+            
         return ";".join(winnings)
 
         
