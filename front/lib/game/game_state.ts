@@ -14,6 +14,7 @@ export class State {
     public playerCount: number;
     public totalPot: number;
     public roundPot: number;
+    public lastNetIncrement: number;
     public board: string[];
     public hole: string[][];
     public deck: string[];
@@ -37,6 +38,7 @@ export class State {
         foldedPlayerIndices,
         totalPot,
         roundPot,
+        lastNetRaise,
         board,
         hole,
         deck,
@@ -54,6 +56,7 @@ export class State {
         foldedPlayerIndices: number[];
         totalPot: number;
         roundPot: number;
+        lastNetRaise: number;
         board: string[];
         hole: string[][];
         deck: string[];
@@ -71,6 +74,7 @@ export class State {
         this.foldedPlayerIndices = foldedPlayerIndices;
         this.totalPot = totalPot;
         this.roundPot = roundPot;
+        this.lastNetIncrement = lastNetRaise;
         this.board = board;
         this.hole = hole;
         this.deck = deck;
@@ -92,6 +96,7 @@ export class State {
             foldedPlayerIndices: [],
             totalPot: 0,
             roundPot: 0,
+            lastNetRaise: 0,
             board: [],
             hole: [],
             deck: starter_deck.slice().sort(() => Math.random() - 0.5),
@@ -104,6 +109,7 @@ export class State {
         state.roundContributions[(state.dealerIndex+1)%playerCount] += State.smallBlind;
         state.stack[(state.activePlayerIndex+1)%playerCount] -= State.bigBlind;
         state.roundContributions[(state.activePlayerIndex+1)%playerCount] += State.bigBlind;
+        state.lastNetIncrement = State.bigBlind;
         state.activePlayerIndex = (state.activePlayerIndex + 2) % playerCount;
         for(let i = 0; i < playerCount; i++){
             state.hole.push([state.deck[++state.nextCardIndex], state.deck[++state.nextCardIndex]]);
@@ -123,6 +129,7 @@ export class State {
             foldedPlayerIndices: [...this.foldedPlayerIndices],
             totalPot: this.totalPot,
             roundPot: this.roundPot,
+            lastNetRaise: this.lastNetIncrement,
             board: [...this.board],
             hole: [...this.hole],
             deck: [...this.deck],

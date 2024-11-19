@@ -41,9 +41,13 @@ function applyPlayerMove(state: State, move: string) {
         if (state.stack[state.activePlayerIndex] < amount) {
             throw new Error("Not enough chips to bet");
         }
+        if(amount < State.bigBlind){
+            throw new Error("Bet amount should be at least big blind");
+        }
         state.stack[state.activePlayerIndex] -= amount;
         state.roundContributions[state.activePlayerIndex] += amount;
         state.roundPot += amount;
+        state.lastNetIncrement = amount;
     } else if (command == "c"){
         const increment = highestBet - state.roundContributions[state.activePlayerIndex];
         if (state.stack[state.activePlayerIndex] < increment) {
@@ -54,8 +58,8 @@ function applyPlayerMove(state: State, move: string) {
         state.roundPot += increment;
     } else if (command == "r"){
         const amount = parseInt(move.substring(1));
-        if(amount < highestBet + State.bigBlind){
-            throw new Error("Raise amount should be at least current round contribution + big blind");
+        if(amount < highestBet + state.lastNetIncrement){
+            throw new Error("Raise amount should be at least round bet + last net increment");
         }
         const increment = amount - state.roundContributions[state.activePlayerIndex];
         if (state.stack[state.activePlayerIndex] < increment) {
@@ -64,6 +68,7 @@ function applyPlayerMove(state: State, move: string) {
         state.stack[state.activePlayerIndex] -= increment;
         state.roundContributions[state.activePlayerIndex] += increment;
         state.roundPot += increment;
+        state.lastNetIncrement = amount - highestBet;
     } else if (command == "f"){
         state.foldedPlayerIndices.push(state.activePlayerIndex);
     } else if (command == "x"){
@@ -104,6 +109,7 @@ function applyDealingMove(state: State, command: string) {
     }
     state.moveHistory.push([command, -1]); // make sure to do this before updating the activePlayerIndex
     state.activePlayerIndex = nextNonFoldedPlayerIndex(state, (state.dealerIndex + 1) % state.playerCount);
+    state.lastNetIncrement = 0;
     return state;
 }
 
@@ -156,7 +162,7 @@ export function getPossibleMoves(state: State): any[] {
         moves.push('c')
     }
     // check if raise is available
-    var canRaise = state.stack[state.activePlayerIndex] >= (State.bigBlind + highestBet - state.roundContributions[state.activePlayerIndex]);
+    var canRaise = state.stack[state.activePlayerIndex] >= (state.lastNetIncrement + highestBet - state.roundContributions[state.activePlayerIndex]);
     canRaise = canRaise && highestBet > 0;
     if(canRaise){
         moves.push('r')

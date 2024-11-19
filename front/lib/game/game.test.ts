@@ -50,8 +50,8 @@ describe('Poker Game', () => {
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "f");  // player 0 folds
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
-        state = applyMove(state, "r120")    // player 1 raised
-        expect(new Set(getPossibleMoves(state))).toEqual(cfr)
+        state = applyMove(state, "r160")    // player 1 raised
+        expect(new Set(getPossibleMoves(state))).toEqual(cfr)       
         state = applyMove(state, "c")   // player 2 called
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "f")   // player 4 folds
@@ -95,7 +95,7 @@ describe('Poker Game', () => {
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "f");  // player 0 folds
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
-        state = applyMove(state, "r120")    // player 1 raised
+        state = applyMove(state, "r160")    // player 1 raised
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "c")   // player 2 called
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
@@ -112,11 +112,10 @@ describe('Poker Game', () => {
         expect(state.moveHistory).toEqual([
             ['c', 2], ['f', 3], ['c', 4], ['c', 0],
             ['x', 1], ['m', -1], ['x', 0], ['x', 1],
-            ['x', 2], ['b80', 4], ['f', 0], ['r120', 1],
+            ['x', 2], ['b80', 4], ['f', 0], ['r160', 1],
             ['c', 2], ['f', 4], ['n', -1], ['x', 1],
             ['f', 2]
         ])
-        console.log(state)
     })
 
     test("playthrough 3", () => {
@@ -146,7 +145,7 @@ describe('Poker Game', () => {
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "f");  // player 0 folds
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
-        state = applyMove(state, "r120")    // player 1 raised
+        state = applyMove(state, "r160")    // player 1 raised
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "c")   // player 2 called
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
@@ -170,20 +169,20 @@ describe('Poker Game', () => {
         expect(state.moveHistory).toEqual([
             ['c', 2], ['f', 3], ['c', 4], ['c', 0],
             ['x', 1], ['m', -1], ['x', 0], ['x', 1],
-            ['x', 2], ['b80', 4], ['f', 0], ['r120', 1],
+            ['x', 2], ['b80', 4], ['f', 0], ['r160', 1],
             ['c', 2], ['f', 4], ['n', -1], ['b100', 1],
             ['c', 2], ['o', -1], ['x', 1], ['x', 2]
         ])
     })
 
-    test("trying to raise to less than highestBet + big blind", () => {
+    test("trying to raise to less than round bet + last net increment", () => {
         var cfr = new Set(["c", "f", "r"])
         var cfrx = new Set(["c", "f", "r", "x"])
         expect(new Set(getPossibleMoves(state))).toEqual(cfr);
         state = applyMove(state, "c");  // Player 2 calls
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
-        // when a player tries to rise to less than highestBet + big blind, it should throw an error
-        expect(() => applyMove(state, "r40")).toThrow("Raise amount should be at least current round contribution + big blind");
+        // when a player tries to rise to less than round bet + last net increment, it should throw an error
+        expect(() => applyMove(state, "r40")).toThrow("Raise amount should be at least round bet + last net increment");
     })
 
     test("trying to raise with not enough chips", () => {
@@ -230,7 +229,6 @@ describe('Poker Game', () => {
         state = applyMove(state, "c");  // Player 2 calls
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "c");  // Player 3 calls
-        console.log(state)
         expect(new Set(getPossibleMoves(state))).toEqual(cfrx)
         state = applyMove(state, "x");  // Player 4 checks
         expect(new Set(getPossibleMoves(state))).toEqual(new Set(["m"]))
@@ -247,7 +245,7 @@ describe('Poker Game', () => {
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "f");  // player 0 folds
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
-        state = applyMove(state, "r120")    // player 1 raised
+        state = applyMove(state, "r160")    // player 1 raised
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
         state = applyMove(state, "c")   // player 2 called
         expect(new Set(getPossibleMoves(state))).toEqual(cfr)
@@ -271,9 +269,29 @@ describe('Poker Game', () => {
         expect(state.moveHistory).toEqual([
             ['c', 0], ['f', 1], ['c', 2], ['c', 3],
             ['x', 4], ['m', -1], ['x', 3], ['x', 4],
-            ['x', 0], ['b80', 2], ['f', 3], ['r120', 4],
+            ['x', 0], ['b80', 2], ['f', 3], ['r160', 4],
             ['c', 0], ['f', 2], ['n', -1], ['b100', 4],
             ['c', 0], ['o', -1], ['x', 4], ['x', 0]
         ])
+    })
+
+    test("raising to illegal amounts throwing errors", () => {
+        var cfr = new Set(["c", "f", "r"])
+        var cfrx = new Set(["c", "f", "r", "x"])
+        expect(new Set(getPossibleMoves(state))).toEqual(cfr);
+        expect(() => applyMove(state, "r60")).toThrow("Raise amount should be at least round bet + last net increment");
+        state = applyMove(state, "r100");  // Player 2 raises from 40 to 100 (so net increment is 60)
+        expect(new Set(getPossibleMoves(state))).toEqual(cfr)
+        expect(() => applyMove(state, "r155")).toThrow("Raise amount should be at least round bet + last net increment");
+        state = applyMove(state, "r230");  // Player 3 raises from 100 to 230 (so net increment is 130)
+        expect(new Set(getPossibleMoves(state))).toEqual(cfr)
+        expect(() => applyMove(state, "r359")).toThrow("Raise amount should be at least round bet + last net increment");
+        state = applyMove(state, "r365");  // Player 4 raises from 230 to 360 (so net increment is 130)
+        expect(new Set(getPossibleMoves(state))).toEqual(cfr)
+        expect(() => applyMove(state, "r485")).toThrow("Raise amount should be at least round bet + last net increment");
+        state = applyMove(state, "r510");  // Player 0 raises from 365 to 510 (so net increment is 145)
+        expect(new Set(getPossibleMoves(state))).toEqual(cfr)
+        expect(() => applyMove(state, "r654")).toThrow("Raise amount should be at least round bet + last net increment");
+        state = applyMove(state, "r655"); 
     })
 }); 
