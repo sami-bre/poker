@@ -29,7 +29,7 @@ class PokerService:
             min_bet=40,  # Min-bet
             raw_starting_stacks=tuple([hand.initial_stack_size] * hand.player_count),
             player_count=hand.player_count,
-
+            
         )
 
         hole = eval(hand.hole)  # Convert string representation to list
@@ -46,7 +46,10 @@ class PokerService:
 
         # Process actions
         actions = eval(hand.actions)  # Convert string representation to list
-        for action in actions:
+
+        for i in range(len(actions)):
+            action_and_player = actions[i]
+            action = action_and_player[0]
             action_type = action[0]
             if action_type == "f":
                 state.fold()
@@ -77,7 +80,13 @@ class PokerService:
             amount = final_stack - hand.initial_stack_size
             winnings.append(f"{i}:{amount}")
 
+        # Calculate shift amount - when dealer is at last position (len-1), this gives 0
+        shift_amount = (len(winnings) - 1 - hand.dealer_position) % len(winnings)
+        # Rotate list left by shift amount
+        winnings = winnings[shift_amount:] + winnings[:shift_amount]
         return ";".join(winnings)
+
+        
     
     def next_card_to_burn(self, used_cards):
         for card in self.deck:
