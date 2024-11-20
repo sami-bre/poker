@@ -9,7 +9,7 @@ To run this project:
 or 
 ```docker-compose up --build```
 
-4. go to 
+4. go to ```localhost:3000``` on your host machine to play the game
 
 
 ## running tests
