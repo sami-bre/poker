@@ -35,3 +35,6 @@ include = '\.pyi?$'
 max-line-length = 88
 extend-ignore = "E203"
 exclude = [".git", "__pycache__", "build", "dist"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

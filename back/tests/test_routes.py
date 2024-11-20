@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 from fastapi import FastAPI
 
 # Import the router instead of routes module
-from back.src.api.routes import router
+from src.api.routes import router
 
 # Create FastAPI app and include the router
 app = FastAPI()
