@@ -1,16 +1,18 @@
 from contextlib import asynccontextmanager
+import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .api.routes import router
-from .repositories.sqlite_repository import SQLiteHandRepository
+from .repositories.postgres_repository import PostgresHandRepository
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    repo = SQLiteHandRepository("poker.db")
+    database_url = os.getenv('DATABASE_URL', 'postgresql://poker:poker@db:5432/poker')
+    repo = PostgresHandRepository(database_url)
     repo.init_tables()
     yield
     # Shutdown (if needed)

@@ -1,15 +1,17 @@
+import os
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..domain.models import Hand
 from ..repositories.base_repository import BaseHandRepository
-from ..repositories.sqlite_repository import SQLiteHandRepository
+from ..repositories.postgres_repository import PostgresHandRepository
 from ..services.poker_service import PokerService
 
 router = APIRouter()
 
 
 def get_repository() -> BaseHandRepository:
-    repo = SQLiteHandRepository("poker.db")
+    database_url = os.getenv('DATABASE_URL', 'postgresql://poker:poker@db:5432/poker')
+    repo = PostgresHandRepository(database_url)
     repo.init_tables()
     return repo
 
