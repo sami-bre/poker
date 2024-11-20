@@ -1,6 +1,7 @@
+import { config } from '@/src/config';
 import { NextResponse } from 'next/server';
 
-const BACKEND_URL = 'http://backend:8000';  
+const BACKEND_URL = config.api.backendUrl;
 
 export async function GET() {
     const response = await fetch(`${BACKEND_URL}/hands`);
