@@ -1,7 +1,7 @@
 import { Hand } from '../models/Hand';
 
 export const saveHand = async (hand: Hand): Promise<Hand> => {
-    const response = await fetch('http://localhost:8000/hands', {
+    const response = await fetch('/api/hands', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -17,7 +17,7 @@ export const saveHand = async (hand: Hand): Promise<Hand> => {
 };
 
 export const getHands = async (): Promise<Hand[]> => {
-    const response = await fetch('http://localhost:8000/hands');
+    const response = await fetch('/api/hands');
     if (!response.ok) {
         throw new Error('Failed to fetch hands');
     }
