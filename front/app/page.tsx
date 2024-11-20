@@ -259,10 +259,13 @@ export default function Home() {
             <div className="space-y-4">
               {hands.map(hand => (
                 <div key={hand.id} className="hand-entry p-4 bg-gray-50 dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                  <div>ID: {hand.id ?? ""}</div>
-                  <div>Stack: {hand.initial_stack_size} Dealer: Player {(hand.dealer_position+1) % hand.player_count} Small Blind: Player {(hand.dealer_position+2) % hand.player_count} Big Blind: Player {(hand.dealer_position+3) % hand.player_count}</div>
-                  <div>Actions: {transformActions(hand)}</div>
-                  <div>Winnings: {transformWinnings(hand.winnings)}</div>
+                  <div><strong>ID:</strong> {hand.id ?? ""}</div>
+                  <div><strong>Stack:</strong> {hand.initial_stack_size} Dealer: Player {(hand.dealer_position % hand.player_count) + 1} Small Blind: Player {(hand.dealer_position+2) % hand.player_count} Big Blind: Player {(hand.dealer_position+3) % hand.player_count}</div>
+                  <div><strong>Hole Cards:</strong> {eval(hand.hole).map((cards: string[], index: number) => 
+                    `Player ${index + 1}: ${cards.join('')}`
+                  ).join(', ')}</div>
+                  <div><strong>Actions:</strong> {transformActions(hand)}</div>
+                  <div><strong>Winnings:</strong> {transformWinnings(hand.winnings)}</div>
                 </div>
               ))}
             </div>
