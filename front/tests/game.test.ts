@@ -1,5 +1,7 @@
-import { getPossibleMoves, applyMove } from './game';
-import { State } from './game_state';
+import { applyMove, getPossibleMoves } from '@/lib/game/game';
+import { State } from '@/lib/game/game_state';
+
+
 import { describe, test, expect, beforeEach } from '@jest/globals';
 
 describe('Poker Game', () => {
