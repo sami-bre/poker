@@ -13,13 +13,13 @@ or
 
 
 ## running tests
-There are three types of thests
+There are three types of tests implemented
 
 ### unit tests to test the game logic
 to run unit tests:
 
 1. go into the frontend container
-```docker exec -it poker_frontend```
+```docker exec -it poker_frontend sh```
 
 2. run the tests
 ```npx jest```
@@ -28,10 +28,10 @@ to run unit tests:
 to run api tests:
 
 1. go into the backend container
-```docker exec -it poker_backend```
+```docker exec -it poker_backend sh```
 
 2. run the tests
-```poetry playwright test```
+```poetry run pytest```
 
 ### e2e test
 Running e2e tests from within the docker container requires headless browsers to be installed inside the container, bloating the container and lengthening the build time. Thus the frontend's Dockerfile in the main branch does not install these components. For this reason, e2e tests can be run only after switching the branch to 'e2e_test_enabled'.
