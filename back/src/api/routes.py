@@ -1,4 +1,5 @@
 import os
+
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..domain.models import Hand
@@ -10,7 +11,10 @@ router = APIRouter()
 
 
 def get_repository() -> BaseHandRepository:
-    database_url = os.getenv('DATABASE_URL', 'postgresql://poker:poker@db:5432/poker')
+    database_url = os.getenv(
+        "DATABASE_URL",
+        "postgresql://poker:poker@db:5432/poker",
+    )
     repo = PostgresHandRepository(database_url)
     repo.init_tables()
     return repo

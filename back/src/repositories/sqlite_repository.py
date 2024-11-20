@@ -110,4 +110,4 @@ class SQLiteHandRepository(BaseHandRepository):
                     winnings=row[8],
                 )
                 for row in cur.fetchall()
-            ] 
+            ]

@@ -1,5 +1,5 @@
-from contextlib import asynccontextmanager
 import os
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,7 +11,10 @@ from .repositories.postgres_repository import PostgresHandRepository
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    database_url = os.getenv('DATABASE_URL', 'postgresql://poker:poker@db:5432/poker')
+    database_url = os.getenv(
+        "DATABASE_URL",
+        "postgresql://poker:poker@db:5432/poker",
+    )
     repo = PostgresHandRepository(database_url)
     repo.init_tables()
     yield

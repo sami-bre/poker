@@ -23,4 +23,4 @@ class BaseHandRepository(ABC):
     @abstractmethod
     def init_tables(self) -> None:
         """Initialize any necessary database tables"""
-        pass 
+        pass
