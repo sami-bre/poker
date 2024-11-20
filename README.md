@@ -1,10 +1,15 @@
 ## how to run the project
+Before spinning up this project, make sure no other program is running on port 3000 on the host machine.
+
+To run this project:
 1. clone the repo
 2. go to the root directory (where docker-compose.yml is located)
 3. depending on your docker installation, run: 
 ```docker compose up --build```
 or 
-```docker-compose up --build``
+```docker-compose up --build```
+
+4. go to 
 
 
 ## running tests
