@@ -1,14 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from ..domain.models import Hand
-from ..repositories.hand_repository import HandRepository
+from ..repositories.base_repository import BaseHandRepository
+from ..repositories.sqlite_repository import SQLiteHandRepository
 from ..services.poker_service import PokerService
 
 router = APIRouter()
 
 
-def get_repository():
-    repo = HandRepository("poker.db")
+def get_repository() -> BaseHandRepository:
+    repo = SQLiteHandRepository("poker.db")
     repo.init_tables()
     return repo
 
@@ -16,7 +17,7 @@ def get_repository():
 @router.post("/hands", response_model=Hand)
 async def create_hand(
     hand: Hand,
-    repo: HandRepository = Depends(get_repository),
+    repo: BaseHandRepository = Depends(get_repository),
     poker_service: PokerService = Depends(lambda: PokerService()),
 ):
     try:
@@ -30,14 +31,14 @@ async def create_hand(
 
 
 @router.get("/hands", response_model=list[Hand])
-async def get_hands(repo: HandRepository = Depends(get_repository)):
+async def get_hands(repo: BaseHandRepository = Depends(get_repository)):
     return repo.get_hands()
 
 
 @router.get("/hands/{hand_id}", response_model=Hand)
 async def get_hand(
     hand_id: str,
-    repo: HandRepository = Depends(get_repository),
+    repo: BaseHandRepository = Depends(get_repository),
 ):
     hand = repo.get_hand(hand_id)
     if not hand:

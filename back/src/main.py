@@ -4,13 +4,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .api.routes import router
-from .repositories.hand_repository import HandRepository
+from .repositories.sqlite_repository import SQLiteHandRepository
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    repo = HandRepository("poker.db")
+    repo = SQLiteHandRepository("poker.db")
     repo.init_tables()
     yield
     # Shutdown (if needed)

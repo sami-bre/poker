@@ -3,16 +3,17 @@ from datetime import datetime
 from typing import List, Optional
 
 from ..domain.models import Hand
+from .base_repository import BaseHandRepository
 
 
-class HandRepository:
+class SQLiteHandRepository(BaseHandRepository):
     def __init__(self, db_path="poker.db"):
         self.db_path = db_path
 
     def get_connection(self):
         return sqlite3.connect(self.db_path)
 
-    def init_tables(self):
+    def init_tables(self) -> None:
         with self.get_connection() as conn:
             cur = conn.cursor()
             cur.execute(
@@ -109,4 +110,4 @@ class HandRepository:
                     winnings=row[8],
                 )
                 for row in cur.fetchall()
-            ]
+            ] 
